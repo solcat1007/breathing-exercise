@@ -1,0 +1,19 @@
+{
+  "name": "呼吸训练 · 小工具",
+  "short_name": "呼吸训练",
+  "description": "跟着圆环节奏，做正念呼吸练习",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f7f9",
+  "theme_color": "#26a69a",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
