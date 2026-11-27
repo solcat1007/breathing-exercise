@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>呼吸训练 · 正念呼吸练习</title>
-<meta name="description" content="跟着圆环节奏做正念呼吸，支持 4-7-8、箱式等多种呼吸法">
+<title>呼吸训练 · 正念呼吸练习 v2.0</title>
+<meta name="description" content="呼吸训练 v2.0：多种呼吸法、自定义时长、柔和音效、进度环与练习统计">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg">
 <meta name="theme-color" content="#26a69a">
@@ -13,16 +13,16 @@
 <style>
 
 :root{
-  --bg:#f4f5f7;           /* 页面底色：浅灰，避免纯白刺眼 */
-  --bg-glow:#ffffff;      /* 顶部径向光晕色，制造轻微的空间感 */
-  --surface:#ffffff;      /* 卡片底色 */
-  --surface-2:#fafbfc;    /* 卡片内的次级区块（输入框、结果区） */
-  --text:#16181d;         /* 主文字 */
-  --soft:#5d636e;         /* 次要文字 */
-  --mute:#8b929e;         /* 弱化文字（提示、单位、占位符） */
-  --line:#e6e8ec;         /* 分割线与边框 */
-  --accent:#26a69a;       /* 强调色（各玩具不同） */
-  --accent-soft:#e6f4f2;  /* 强调色的浅色版，用于底色块 */
+  --bg:#f4f5f7;
+  --bg-glow:#ffffff;
+  --surface:#ffffff;
+  --surface-2:#fafbfc;
+  --text:#16181d;
+  --soft:#5d636e;
+  --mute:#8b929e;
+  --line:#e6e8ec;
+  --accent:#26a69a;
+  --accent-soft:#e6f4f2;
   --r-lg:20px; --r-md:14px; --r-sm:10px;
   --ease:cubic-bezier(.4,0,.2,1);
   --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
@@ -32,7 +32,6 @@
 body{
   font-family:system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
   background:var(--bg);
-  /* 顶部一层极淡光晕，比死板的纯色更有层次 */
   background-image:radial-gradient(120% 80% at 50% 0%, var(--bg-glow) 0%, rgba(255,255,255,0) 62%);
   background-attachment:fixed;
   color:var(--text);
@@ -41,7 +40,7 @@ body{
   padding:24px; -webkit-font-smoothing:antialiased;
 }
 
-.app{width:100%; max-width:480px; display:flex; flex-direction:column; align-items:center; gap:20px}
+.app{width:100%; max-width:480px; display:flex; flex-direction:column; align-items:center; gap:18px}
 
 .head{text-align:center}
 .head h1{font-size:22px; font-weight:600; letter-spacing:.5px}
@@ -49,56 +48,37 @@ body{
 
 .card{
   width:100%; background:var(--surface); border:1px solid var(--line);
-  border-radius:var(--r-lg); padding:22px; box-shadow:var(--shadow);
+  border-radius:var(--r-lg); padding:20px; box-shadow:var(--shadow);
 }
 
-.stage{
-  width:288px; height:288px; position:relative;
-  background:var(--surface); border:1px solid var(--line);
-  border-radius:50%; box-shadow:var(--shadow);
-  display:flex; align-items:center; justify-content:center;
-}
-.stage canvas{border-radius:50%}
-
-.phase{
-  font-size:29px; font-weight:300; letter-spacing:6px;
-  color:var(--accent); min-height:42px; text-align:center;
-  transition:color .4s var(--ease);
-}
-.cd{font-size:15px; color:var(--soft); font-variant-numeric:tabular-nums; min-height:22px}
-.meta{font-size:13px; color:var(--mute); min-height:20px; text-align:center}
-
-.row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-.stats{display:flex; gap:10px; width:100%}
+.row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; align-items:center}
+.stats{display:flex; gap:8px; width:100%}
 .stat{
   flex:1; background:var(--surface-2); border:1px solid var(--line);
-  border-radius:var(--r-md); padding:12px; text-align:center;
+  border-radius:var(--r-md); padding:11px 6px; text-align:center;
 }
 .stat .k{font-size:11px; color:var(--mute); letter-spacing:1px}
-.stat .v{font-size:21px; font-weight:600; margin-top:3px; font-variant-numeric:tabular-nums}
+.stat .v{font-size:19px; font-weight:600; margin-top:3px; font-variant-numeric:tabular-nums}
 
 .chip{
-  padding:9px 18px; font-size:13px; font-weight:500; font-family:inherit;
+  padding:7px 14px; font-size:12px; font-weight:500; font-family:inherit;
   background:var(--surface); color:var(--soft);
   border:1px solid var(--line); border-radius:999px; cursor:pointer;
   transition:all .2s var(--ease);
 }
 .chip:hover{border-color:var(--accent); color:var(--accent)}
-.chip.active{
-  background:var(--accent); border-color:var(--accent); color:#fff;
-  box-shadow:0 4px 14px rgba(0,0,0,.14);
-}
+.chip.active{background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 4px 14px rgba(0,0,0,.14)}
 
 .btn{
-  padding:13px 42px; font-size:15px; font-weight:600; font-family:inherit;
-  letter-spacing:3px; background:var(--accent); color:#fff;
+  padding:12px 34px; font-size:14px; font-weight:600; font-family:inherit;
+  letter-spacing:2px; background:var(--accent); color:#fff;
   border:none; border-radius:var(--r-md); cursor:pointer;
   transition:transform .15s var(--ease), box-shadow .2s var(--ease);
   box-shadow:0 6px 20px rgba(0,0,0,.16);
 }
 .btn:hover{transform:translateY(-1px)}
 .btn:active{transform:translateY(0)}
-.btn.ghost{background:transparent; border:1px solid var(--line); color:var(--soft); box-shadow:none}
+.btn.ghost{background:transparent; border:1px solid var(--line); color:var(--soft); box-shadow:none; padding:10px 18px}
 
 .lang{
   position:fixed; top:16px; right:16px; z-index:20;
@@ -108,15 +88,34 @@ body{
   transition:all .2s var(--ease);
 }
 .lang:hover{border-color:var(--accent); color:var(--accent)}
-
 .hint{font-size:12px; color:var(--mute); text-align:center; line-height:1.7}
+
+.stage{width:288px; height:288px; position:relative; display:flex; align-items:center; justify-content:center}
+.stage canvas{width:288px; height:288px; display:block}
+
+.phase{
+  font-size:29px; font-weight:300; letter-spacing:6px;
+  color:var(--accent); min-height:42px; text-align:center;
+  transition:color .4s var(--ease);
+}
+.cd{font-size:15px; color:var(--soft); font-variant-numeric:tabular-nums; min-height:22px}
+.meta{font-size:13px; color:var(--mute); min-height:20px; text-align:center}
+
+.settings{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; width:100%; margin-top:14px}
+.settings label{font-size:11px; color:var(--mute); text-align:center}
+.settings input{
+  width:100%; margin-top:4px; padding:7px 2px; text-align:center;
+  font-family:inherit; font-size:14px; color:var(--text);
+  background:var(--surface-2); border:1px solid var(--line); border-radius:var(--r-sm);
+}
+.settings input:focus{outline:none; border-color:var(--accent)}
+.toggle{font-size:12px; color:var(--soft); min-height:18px}
 
 @media (max-width:380px){
   .stage{width:250px;height:250px}
+  .stage canvas{width:250px;height:250px}
   .phase{font-size:25px; letter-spacing:4px}
 }
-
-:root{ --accent:#26a69a; --accent-soft:#e6f4f2; }
 
 </style>
 </head>
@@ -137,50 +136,143 @@ body{
   <div class="cd" id="cd">--</div>
   <div class="meta" id="meta"></div>
 
-  <button class="btn" id="mainBtn" onclick="toggle()">开始</button>
+  <div class="row">
+    <button class="btn" id="mainBtn" onclick="toggle()">开始</button>
+    <button class="btn ghost" id="soundBtn" onclick="toggleSound()">♪ 音效开</button>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><span class="toggle" id="t_custom">自定义呼吸法</span></div>
+    <div class="settings">
+      <label id="t_in">吸气<input type="number" id="inSec" min="1" max="30" value="4"></label>
+      <label id="t_hold">屏息<input type="number" id="holdSec" min="0" max="30" value="4"></label>
+      <label id="t_out">呼气<input type="number" id="outSec" min="1" max="30" value="6"></label>
+      <label id="t_rest">放松<input type="number" id="restSec" min="0" max="30" value="2"></label>
+      <label id="t_cycles">轮数<input type="number" id="cyc" min="1" max="20" value="5"></label>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn ghost" id="applyBtn" onclick="applyCustom()">应用自定义</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stats">
+      <div class="stat"><div class="k" id="k_today">今日</div><div class="v" id="vToday">0m</div></div>
+      <div class="stat"><div class="k" id="k_total">累计</div><div class="v" id="vTotal">0m</div></div>
+      <div class="stat"><div class="k" id="k_streak">连续</div><div class="v" id="vStreak">0d</div></div>
+    </div>
+  </div>
+
   <div class="hint" id="t_hint">吸气时圆环放大，呼气时缩小<br>建议每天练习 2–4 轮</div>
 
 </div>
 <script>
 
 /* ============================================================
- * 呼吸训练
+ * 呼吸训练 v2.0
  * ------------------------------------------------------------
- * 核心抽象：把一种「呼吸法」表示为若干个「阶段」的序列，
- *   每个阶段 = [名称, 秒数]
- * 计时器只管推进阶段，圆环半径根据当前阶段的名称做插值：
- *   吸气 → 由小变大；呼气 → 由大变小；屏息 → 停在最大；放松 → 停在最小
- * 这样设计后，新增一种呼吸法只需往 PATTERNS 里加数据，逻辑零改动。
+ * 核心抽象：一种「呼吸法」= 若干「阶段」的序列，阶段 = [名称, 秒数]。
+ *   圆环半径按阶段名插值：吸气变大、呼气变小、屏息停最大、放松停最小。
+ *   计时器推进阶段，外圈进度环表示整场练习的完成度。
+ *
+ * v2.0 新增：自定义时长、WebAudio 柔和提示音、进度环、练习统计。
+ * 音效完全由振荡器合成，零外部依赖，保持单文件 PWA。
  * ========================================================== */
 
-/* 呼吸法数据表 */
+/* 呼吸法数据表（新增两种，保留原有三种） */
 const PATTERNS = {
   p478: { label:'4-7-8', cycles:4, steps:[['吸气',4],['屏息',7],['呼气',8],['放松',1]] },
   box:  { label:'箱式',  cycles:5, steps:[['吸气',4],['屏息',4],['呼气',4],['放松',4]] },
-  calm: { label:'舒缓',  cycles:6, steps:[['吸气',5],['呼气',5]] }
+  calm: { label:'舒缓',  cycles:6, steps:[['吸气',5],['呼气',5]] },
+  sleep:{ label:'助眠',  cycles:4, steps:[['吸气',4],['屏息',7],['呼气',8]] },
+  focus:{ label:'专注',  cycles:6, steps:[['吸气',3],['屏息',3],['呼气',3],['放松',3]] },
+  custom:{ label:'自定义', cycles:5, steps:[['吸气',4],['屏息',4],['呼气',6],['放松',2]] }
 };
 
-/* 中英文文案表。cycle 是函数而不是字符串，因为里面要插两个变量 */
 const I18N = {
-  zh:{ title:'呼吸训练', sub:'跟着圆环的节奏呼吸', hint:'吸气时圆环放大，呼气时缩小<br>建议每天练习 2–4 轮',
+  zh:{ title:'呼吸训练', sub:'跟着圆环的节奏呼吸',
+       hint:'吸气时圆环放大，呼气时缩小<br>建议每天练习 2–4 轮',
        ready:'准备', start:'开始', stop:'停止', done:'练习完成',
        cycle:function(n,t){ return '第 '+n+' 轮 / 共 '+t+' 轮'; },
-       inhale:'吸气', hold:'屏息', exhale:'呼气', rest:'放松' },
-  en:{ title:'Breathing', sub:'Follow the ring and breathe', hint:'Ring expands as you inhale<br>Try 2-4 sessions daily',
+       inhale:'吸气', hold:'屏息', exhale:'呼气', rest:'放松',
+       custom:'自定义呼吸法', in:'吸气', holdL:'屏息', out:'呼气', restL:'放松', cycles:'轮数',
+       apply:'应用自定义', soundOn:'♪ 音效开', soundOff:'♪ 音效关',
+       today:'今日', total:'累计', streak:'连续', zen:'禅定达成 · SOLCAT 与你同在' },
+  en:{ title:'Breathing', sub:'Follow the ring and breathe',
+       hint:'Ring expands as you inhale<br>Try 2-4 sessions daily',
        ready:'Ready', start:'Start', stop:'Stop', done:'Session complete',
        cycle:function(n,t){ return 'Cycle '+n+' / '+t; },
-       inhale:'Inhale', hold:'Hold', exhale:'Exhale', rest:'Rest' }
+       inhale:'Inhale', hold:'Hold', exhale:'Exhale', rest:'Rest',
+       custom:'Custom pattern', in:'Inhale', holdL:'Hold', out:'Exhale', restL:'Rest', cycles:'Cycles',
+       apply:'Apply custom', soundOn:'♪ Sound on', soundOff:'♪ Sound off',
+       today:'Today', total:'Total', streak:'Streak', zen:'Zen achieved · SOLCAT is with you' }
 };
 
-let lang='zh', pattern='p478', running=false;
-let stepIdx=0, cycleNum=0, ticker=null, stepStart=0;
+let lang='zh', pattern='p478', running=false, soundOn=true;
+let stepIdx=0, cycleNum=0, ticker=null, stepStart=0, sessionStart=0, rainbow=false;
+let stats = { days:{}, total:0, sessions:0 }, audioCtx = null;
 
+const STAT_KEY = 'breathing_stats_v2';
 var cv=document.getElementById('cv'), ctx=cv.getContext('2d');
 var CX=144, CY=144, R_MAX=112, R_MIN=44;
 
-/* ---------- 界面 ---------- */
+/* ---------- 统计 ---------- */
+function loadStats(){
+  try {
+    const s = JSON.parse(localStorage.getItem(STAT_KEY)||'null');
+    if (s && s.days) stats = s;
+  } catch(e){}
+}
+function saveStats(){
+  try { localStorage.setItem(STAT_KEY, JSON.stringify(stats)); } catch(e){}
+}
+function todayKey(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function streakDays(){
+  const d = new Date();
+  let n = 0;
+  for (;;){
+    const k = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    if (!stats.days[k]) break;
+    n++; d.setDate(d.getDate()-1);
+  }
+  return n;
+}
+function fmtMin(sec){ return Math.round(sec/60) + 'm'; }
+function refreshStats(){
+  document.getElementById('vToday').textContent  = fmtMin(stats.days[todayKey()] || 0);
+  document.getElementById('vTotal').textContent  = fmtMin(stats.total || 0);
+  document.getElementById('vStreak').textContent = streakDays() + 'd';
+}
+function recordSession(sec){
+  const k = todayKey();
+  stats.days[k] = (stats.days[k]||0) + sec;
+  stats.total = (stats.total||0) + sec;
+  stats.sessions = (stats.sessions||0) + 1;
+  saveStats(); refreshStats();
+}
 
-/** 生成呼吸法切换按钮；运行中禁止切换，否则阶段索引会错位 */
+/* ---------- 音效（WebAudio 合成，零依赖） ---------- */
+function beep(freq, dur){
+  if (!soundOn) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const t = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.09, t+0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(t); osc.stop(t+dur+0.02);
+  } catch(e){}
+}
+function toggleSound(){ soundOn = !soundOn; refresh(); if (soundOn) beep(660, .18); }
+
+/* ---------- 界面 ---------- */
 function buildChips(){
   var box=document.getElementById('patterns');
   box.innerHTML='';
@@ -193,23 +285,48 @@ function buildChips(){
   });
 }
 
-/** 刷新界面文案 */
+function applyCustom(){
+  if (running) return;
+  const val = function(id, def){ const n = parseInt(document.getElementById(id).value, 10); return isNaN(n) ? def : Math.max(0, Math.min(30, n)); };
+  const steps = [
+    ['吸气', Math.max(1, val('inSec',4))],
+    ['屏息', val('holdSec',4)],
+    ['呼气', Math.max(1, val('outSec',6))],
+    ['放松', val('restSec',2)]
+  ].filter(function(s){ return s[1] > 0; });
+  PATTERNS.custom.steps = steps;
+  PATTERNS.custom.cycles = Math.max(1, Math.min(20, val('cyc',5)));
+  pattern = 'custom';
+  hardReset(); buildChips();
+  beep(720, .15);
+}
+
 function refresh(){
   var L=I18N[lang];
   document.getElementById('t_title').textContent=L.title;
   document.getElementById('t_sub').textContent=L.sub;
   document.getElementById('t_hint').innerHTML=L.hint;
   document.getElementById('mainBtn').textContent=running?L.stop:L.start;
+  document.getElementById('soundBtn').textContent=soundOn?L.soundOn:L.soundOff;
+  document.getElementById('t_custom').textContent=L.custom;
+  document.getElementById('t_in').firstChild.textContent=L.in;
+  document.getElementById('t_hold').firstChild.textContent=L.holdL;
+  document.getElementById('t_out').firstChild.textContent=L.out;
+  document.getElementById('t_rest').firstChild.textContent=L.restL;
+  document.getElementById('t_cycles').firstChild.textContent=L.cycles;
+  document.getElementById('applyBtn').textContent=L.apply;
+  document.getElementById('k_today').textContent=L.today;
+  document.getElementById('k_total').textContent=L.total;
+  document.getElementById('k_streak').textContent=L.streak;
   document.getElementById('langBtn').textContent=(lang==='zh')?'EN':'中';
 }
 
 /* ---------- 状态机 ---------- */
-
 function toggle(){ running?stop():start(); }
 
 function start(){
-  running=true; cycleNum=0; stepIdx=0;
-  refresh(); enterStep();
+  running=true; cycleNum=0; stepIdx=0; sessionStart=Date.now();
+  refresh(); enterStep(true);
   ticker=setInterval(tick,80);   /* 80ms 一跳，圆环动画才够顺滑 */
 }
 
@@ -220,10 +337,10 @@ function hardReset(){
   document.getElementById('phase').textContent=I18N[lang].ready;
   document.getElementById('cd').textContent='--';
   document.getElementById('meta').textContent='';
-  refresh(); draw(R_MIN);
+  refresh(); draw(R_MIN, 0);
 }
 
-/** 主循环：算已过时间 → 更新倒计时数字与圆环半径 → 判断是否切阶段 */
+/** 主循环：算已过时间 → 更新倒计时、圆环与外圈进度 → 判断是否切阶段 */
 function tick(){
   var p=PATTERNS[pattern], step=p.steps[stepIdx];
   var dur=step[1]*1000;
@@ -237,12 +354,15 @@ function tick(){
   if      (step[0]==='吸气') r=R_MIN+(R_MAX-R_MIN)*ease(t);
   else if (step[0]==='呼气') r=R_MAX-(R_MAX-R_MIN)*ease(t);
   else                       r=(step[0]==='屏息')?R_MAX:R_MIN;
-  draw(r);
+
+  // 整场进度：已完成轮数 + 当前阶段进度
+  var phaseTotal = p.steps.length;
+  var prog = Math.min(1, (cycleNum + (stepIdx + t)/phaseTotal) / p.cycles);
+  draw(r, prog);
 
   if (elapsed>=dur){ stepIdx++; advance(); }
 }
 
-/** 推进：一轮走完就进入下一轮，全部完成则结束 */
 function advance(){
   var p=PATTERNS[pattern];
   if (stepIdx>=p.steps.length){
@@ -254,12 +374,13 @@ function advance(){
   enterStep();
 }
 
-function enterStep(){
+function enterStep(first){
   var step=PATTERNS[pattern].steps[stepIdx];
   stepStart=Date.now();
   var L=I18N[lang];
   var map={'吸气':L.inhale,'屏息':L.hold,'呼气':L.exhale,'放松':L.rest};
   document.getElementById('phase').textContent=map[step[0]]||step[0];
+  if (!first) beep(step[0]==='呼气' ? 420 : 620, .22);   /* 阶段切换提示音 */
 }
 
 function finish(){
@@ -267,21 +388,31 @@ function finish(){
   document.getElementById('phase').textContent=I18N[lang].done;
   document.getElementById('cd').textContent='';
   document.getElementById('meta').textContent='';
-  refresh(); draw(R_MAX);
+  recordSession(Math.round((Date.now()-sessionStart)/1000));
+  beep(880, .5);
+  eggUnlock('breath-zen', I18N[lang].zen);
+  refresh(); draw(R_MAX, 1);
 }
 
 /* ---------- 绘制 ---------- */
-
-/** 缓动：用余弦让扩张/收缩先慢后快再慢，贴近真实呼吸节奏 */
 function ease(t){ return 0.5-0.5*Math.cos(Math.PI*t); }
 
-/** 画圆环：外圈轨道 + 半透明实心圆（半径随呼吸变化）+ 圆心锚点 */
-function draw(r){
+/** 画圆环：外圈进度环 + 半透明实心圆 + 圆心锚点 */
+function draw(r, progress){
   ctx.clearRect(0,0,288,288);
 
-  ctx.beginPath();
-  ctx.arc(CX,CY,R_MAX,0,Math.PI*2);
-  ctx.strokeStyle='#eef1f3'; ctx.lineWidth=2; ctx.stroke();
+  // 外圈轨道
+  ctx.beginPath(); ctx.arc(CX,CY,R_MAX+12,0,Math.PI*2);
+  ctx.strokeStyle='#eef1f3'; ctx.lineWidth=4; ctx.stroke();
+
+  // 进度环：顺时针显示整场完成度，圆角线帽更柔和
+  if (progress > 0){
+    ctx.beginPath();
+    ctx.arc(CX,CY,R_MAX+12,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,progress));
+    ctx.strokeStyle = rainbow ? '#ffca28' : '#26a69a';
+    ctx.lineWidth=4; ctx.lineCap='round'; ctx.stroke();
+    ctx.lineCap='butt';
+  }
 
   var g=ctx.createRadialGradient(CX,CY,r*0.15,CX,CY,r);
   g.addColorStop(0,'rgba(38,166,154,.32)');
@@ -290,7 +421,7 @@ function draw(r){
   ctx.fillStyle=g; ctx.fill();
 
   ctx.beginPath(); ctx.arc(CX,CY,r,0,Math.PI*2);
-  ctx.strokeStyle='#26a69a'; ctx.lineWidth=2.5; ctx.stroke();
+  ctx.strokeStyle=rainbow?'#ffca28':'#26a69a'; ctx.lineWidth=2.5; ctx.stroke();
 
   ctx.beginPath(); ctx.arc(CX,CY,3,0,Math.PI*2);
   ctx.fillStyle='rgba(38,166,154,.55)'; ctx.fill();
@@ -300,17 +431,51 @@ function draw(r){
 function toggleLang(){
   lang=(lang==='zh')?'en':'zh';
   buildChips();
-  /* 若不在运行中，同步刷新提示文字；运行中保持当前阶段文字不被打断 */
-  if(!running){
-    document.getElementById('phase').textContent=I18N[lang].ready;
-  }
+  if(!running) document.getElementById('phase').textContent=I18N[lang].ready;
   refresh();
 }
 
+/* ---------- 彩蛋接入 ---------- */
+function eggUnlock(id, msg){
+  const E = window.__SOLCAT_EGG__;
+  if (!E || E.unlocked.has(id)) return;
+  E.unlocked.add(id);
+  E.onUnlock.forEach(function(fn){ try{ fn(id); }catch(e){} });
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:18%;left:50%;transform:translateX(-50%);z-index:99996;'+
+    'background:rgba(18,20,26,.92);color:#ffca28;padding:12px 22px;border:1px solid #ffca28;'+
+    'border-radius:12px;font:14px ui-monospace,monospace;pointer-events:none;'+
+    'animation:eggIn .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.4)';
+  t.textContent = '☠ ' + msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 2800);
+}
+
+function initEgg(){
+  const E = window.__SOLCAT_EGG__;
+  if (!E) return;
+  // 专属彩蛋：任意解锁后，圆环变金色并奏一段上行音阶
+  E.onUnlock.push(function(id){
+    if (id === 'breath-zen' || id === 'konami'){
+      rainbow = true;
+      draw(running ? R_MAX : R_MIN, progressNow());
+      [523,659,784,1047].forEach(function(f,i){ setTimeout(function(){ beep(f,.3); }, i*140); });
+      setTimeout(function(){ rainbow = false; draw(R_MIN, progressNow()); }, 6000);
+    }
+  });
+}
+function progressNow(){
+  const p = PATTERNS[pattern];
+  return Math.min(1, cycleNum / p.cycles);
+}
+
 /* ---------- 启动 ---------- */
+loadStats();
 buildChips();
 refresh();
-draw(R_MIN);
+refreshStats();
+draw(R_MIN, 0);
+document.addEventListener('DOMContentLoaded', initEgg);
 
 /* ---------- PWA 注册 ----------
  * 注册 Service Worker 后本页被缓存，断网也能打开。
@@ -320,6 +485,156 @@ if ('serviceWorker' in navigator){
     navigator.serviceWorker.register('./sw.js').catch(function(){});
   });
 }
+</script>
+<script>
+/* ============================================================
+ * SOLCAT EASTER EGG PROTOCOL v2.0 — 通用彩蛋引擎
+ * 零依赖 · 单文件 · 可注入任意 HTML 项目
+ * ============================================================ */
+(function(){
+  'use strict';
+  if (window.__SOLCAT_EGG__) return;
+  window.__SOLCAT_EGG__ = { version:'2.0', unlocked:new Set(), onUnlock:[] };
+
+  var E = window.__SOLCAT_EGG__;
+  var KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  var seq = [], logoClicks = 0, logoTimer = null;
+
+  /* ---------- 1. 控制台署名（ASCII Art） ---------- */
+  function banner(){
+    var art = '%c\n  ____             _   _       _   _   \n' +
+      ' / ___|  ___  _ __| |_(_) __ _| |_| |__  \n' +
+      ' \\___ \\ / _ \\| \'__| __| |/ _` | __| \'_ \\ \n' +
+      '  ___) | (_) | |  | |_| | (_| | |_| | | |\n' +
+      ' |____/ \\___/|_|   \\__|_|\\__,_|\\__|_| |_|\n';
+    console.log(art, 'color:#26a69a;font-family:monospace;font-weight:bold');
+    console.log('%c☠ SOLCAT EASTER EGG PROTOCOL v2.0 — 你找到了隐藏入口',
+      'color:#666;font-size:11px;letter-spacing:1px');
+    console.log('%c提示：↑↑↓↓←→←→BA · 连点标题 5 次 · 输入 solcat · Ctrl+Shift+T',
+      'color:#999;font-size:10px');
+  }
+
+  /* ---------- 2. 烟花彩带粒子 ---------- */
+  function confetti(){
+    var colors = ['#26a69a','#42a5f5','#ef5350','#ffca28','#ab47bc','#66bb6a','#ff7043'];
+    var cvs = document.createElement('canvas');
+    cvs.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99999';
+    document.body.appendChild(cvs);
+    var ctx = cvs.getContext('2d'), W = cvs.width = innerWidth, H = cvs.height = innerHeight;
+    var P = [];
+    for (var i=0;i<180;i++) P.push({
+      x:W/2+(Math.random()-.5)*120, y:H*.4+(Math.random()-.5)*40,
+      vx:(Math.random()-.5)*18, vy:-Math.random()*16-4,
+      c:colors[i%colors.length], s:Math.random()*8+4, r:Math.random()*6,
+      life:1, spin:(Math.random()-.5)*.3
+    });
+    var f = 0;
+    (function draw(){
+      f++; ctx.clearRect(0,0,W,H);
+      P.forEach(function(p){
+        p.x+=p.vx; p.y+=p.vy; p.vy+=.35; p.vx*=.99; p.r+=p.spin; p.life-=.006;
+        if(p.life<=0) return;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.globalAlpha=p.life;
+        ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); ctx.restore();
+      });
+      if (f<180) requestAnimationFrame(draw); else cvs.remove();
+    })();
+  }
+
+  /* ---------- 3. 隐藏开发者面板 ---------- */
+  function devPanel(app){
+    var old = document.getElementById('__egg_panel');
+    if (old){ old.remove(); return; }
+    var d = document.createElement('div');
+    d.id='__egg_panel';
+    d.style.cssText='position:fixed;bottom:20px;right:20px;z-index:99998;width:280px;'+
+      'background:rgba(18,20,26,.94);color:#e0e0e0;border:1px solid #26a69a;border-radius:14px;'+
+      'padding:18px;font:12px/1.7 ui-monospace,monospace;backdrop-filter:blur(12px);'+
+      'box-shadow:0 12px 40px rgba(0,0,0,.4);animation:eggIn .3s ease';
+    d.innerHTML='<div style="color:#26a69a;font-weight:bold;font-size:13px;margin-bottom:10px">'+
+      '☠ SOLCAT 开发者模式</div>'+
+      '<div>应用　　: '+app+'</div>'+
+      '<div>协议　　: EGG PROTOCOL v'+E.version+'</div>'+
+      '<div>解锁数　: '+E.unlocked.size+'</div>'+
+      '<div>UA　　　: '+(navigator.userAgent.slice(0,38))+'…</div>'+
+      '<div>屏幕　　: '+innerWidth+'×'+innerHeight+'</div>'+
+      '<div>运行时间: '+Math.round(performance.now()/1000)+'s</div>'+
+      '<div style="color:#888;margin-top:10px;border-top:1px solid #333;padding-top:8px">'+
+      '已解锁: '+Array.from(E.unlocked).join(', ')+'</div>'+
+      '<button onclick="this.parentNode.remove()" style="margin-top:12px;width:100%;padding:6px;'+
+      'background:#26a69a;color:#fff;border:0;border-radius:6px;cursor:pointer">关闭</button>';
+    document.body.appendChild(d);
+  }
+
+  /* ---------- 4. 隐藏主题（赛博朋克） ---------- */
+  function cyberTheme(){
+    var s=document.getElementById('__egg_cyber');
+    if(s){ s.remove(); document.body.classList.remove('egg-cyber'); return; }
+    s=document.createElement('style'); s.id='__egg_cyber';
+    s.textContent='body.egg-cyber{filter:invert(1) hue-rotate(180deg)!important;}'+
+      'body.egg-cyber *{font-family:"Courier New",monospace!important;letter-spacing:1px}';
+    document.head.appendChild(s); document.body.classList.add('egg-cyber');
+    unlock('cyber','☠ 赛博模式已启用');
+  }
+
+  /* ---------- 5. 解锁分发 ---------- */
+  function unlock(id,msg){
+    if (E.unlocked.has(id)) return;
+    E.unlocked.add(id);
+    if (msg) console.log('%c[EGG] '+msg,'color:#ffca28;font-weight:bold');
+    E.onUnlock.forEach(function(fn){ try{fn(id);}catch(e){} });
+    var t=document.createElement('div');
+    t.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);'+
+      'z-index:99997;background:rgba(18,20,26,.92);color:#ffca28;padding:18px 28px;'+ 
+      'border:1px solid #ffca28;border-radius:12px;font:14px ui-monospace,monospace;'+
+      'pointer-events:none;animation:eggIn .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.4)';
+    t.textContent='☠ '+msg;
+    document.body.appendChild(t); setTimeout(function(){t.remove();},2200);
+  }
+
+  /* ---------- 6. 事件绑定 ---------- */
+  function init(){
+    var app = document.title || 'SOLCAT App';
+    banner();
+
+    // Konami 秘籍
+    addEventListener('keydown', function(e){
+      var k = e.key.length===1 ? e.key.toLowerCase() : e.key;
+      seq.push(k); if(seq.length>KONAMI.length) seq.shift();
+      if (seq.length===KONAMI.length && KONAMI.every(function(v,i){return seq[i]===v;})){
+        seq=[]; confetti(); unlock('konami','KONAMI CODE 已激活！');
+      }
+      // Ctrl+Shift+T → 赛博主题
+      if (e.ctrlKey && e.shiftKey && (e.key==='T'||e.key==='t')){
+        e.preventDefault(); cyberTheme();
+      }
+      // 输入 solcat
+      if (e.key==='Enter' && window.__eggBuf__ === 'solcat'){ cyberTheme(); window.__eggBuf__=''; }
+      if (k.length===1) window.__eggBuf__ = ((window.__eggBuf__||'')+k).slice(-10);
+    });
+
+    // 连点标题 5 次 → 开发者面板
+    addEventListener('DOMContentLoaded', function(){
+      var targets = document.querySelectorAll('h1,.head h1,.logo,header h1');
+      var t = targets[0];
+      if(t){ t.style.cursor='default'; t.addEventListener('click',function(){
+        logoClicks++;
+        clearTimeout(logoTimer);
+        logoTimer=setTimeout(function(){logoClicks=0;},900);
+        if(logoClicks>=5){ logoClicks=0; devPanel(app); unlock('dev','开发者模式已解锁'); }
+      });}
+      // 给 body 加动画 keyframe
+      var a=document.createElement('style');
+      a.textContent='@keyframes eggIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}';
+      document.head.appendChild(a);
+    });
+
+    console.log('%c☠ 彩蛋引擎已加载 — 祝你玩得开心','color:#26a69a');
+  }
+
+  if (document.readyState==='loading') addEventListener('DOMContentLoaded',init);
+  else init();
+})();
 </script>
 </body>
 </html>

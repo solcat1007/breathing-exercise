@@ -1,7 +1,7 @@
 {
-  "name": "呼吸训练 · 小工具",
+  "name": "呼吸训练 · v2.0",
   "short_name": "呼吸训练",
-  "description": "跟着圆环节奏，做正念呼吸练习",
+  "description": "呼吸训练 v2.0：多种呼吸法、自定义时长、柔和音效、进度环与练习统计",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -15,5 +15,6 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "version": "2.0.0"
 }
